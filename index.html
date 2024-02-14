@@ -4,26 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tip Plugin</title>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
     <link rel="stylesheet" href="style.css">
     <script src="ethers.min.js" type="application/javascript"></script>
 </head>
 <body>
     <div class="container">
-        <button id="creatorBtn">创作者</button>
-        <button id="readerBtn">读者</button>
+        <button id="creatorBtn">Creator</button>
+        <button id="readerBtn">Reader</button>
 
-        <div id="creatorOptions" class="hidden">
+        <div id="creatorOptions">
             <input id="urlInput" type="text" placeholder="Enter URL">
-            <button id="storeUrlButton">存储URL</button>
-            <button id="withdrawButton">提取打赏</button>
+            <button id="storeUrlButton">Store URL</button>
+            <button id="withdrawButton">Withdraw</button>
         </div>
 
-        <div id="readerOptions" class="hidden">
+        <div id="readerOptions">
             <input id="tipAmount" type="number" placeholder="Enter tip amount (ETH)">
-            <button id="tipButton">发送打赏</button>
+            <button id="tipButton">Send Tips</button>
         </div>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script>
+        document.getElementById("creatorBtn").addEventListener("click", function() {
+            document.getElementById("creatorOptions").style.display = "block"; // 显示creatorOptions
+            document.getElementById("readerOptions").style.display = "none"; // 隐藏readerOptions
+        });
+    
+        document.getElementById("readerBtn").addEventListener("click", function() {
+            document.getElementById("readerOptions").style.display = "block"; // 显示readerOptions
+            document.getElementById("creatorOptions").style.display = "none"; // 隐藏creatorOptions
+        });
+    </script>
 </body>
 </html>
