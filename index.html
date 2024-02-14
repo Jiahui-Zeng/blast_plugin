@@ -17,28 +17,18 @@
         <button id="creatorBtn">Creator</button>
         <button id="readerBtn">Reader</button>
 
-        <div id="creatorOptions">
+        <div id="creatorOptions" class="hidden">
             <input id="urlInput" type="text" placeholder="Enter URL">
             <button id="storeUrlButton">Store URL</button>
             <button id="withdrawButton">Withdraw</button>
         </div>
 
-        <div id="readerOptions">
+        <div id="readerOptions" class="hidden">
             <input id="tipAmount" type="number" placeholder="Enter tip amount (ETH)">
             <button id="tipButton">Send Tips</button>
         </div>
     </div>
 
-    <script>
-        document.getElementById("creatorBtn").addEventListener("click", function() {
-            document.getElementById("creatorOptions").style.display = "block"; // 显示creatorOptions
-            document.getElementById("readerOptions").style.display = "none"; // 隐藏readerOptions
-        });
-    
-        document.getElementById("readerBtn").addEventListener("click", function() {
-            document.getElementById("readerOptions").style.display = "block"; // 显示readerOptions
-            document.getElementById("creatorOptions").style.display = "none"; // 隐藏creatorOptions
-        });
-    </script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
