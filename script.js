@@ -1,84 +1,70 @@
-import { ethers } from "./ethers.min.js";
+import {ethers} from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
 
-
-let signer;
-let provider;
-const contractAddress = "YOUR_CONTRACT_ADDRESS";
-const contractABI = []; // Your contract ABI
-let contract
-var url
-
-// ethereum.request({ method: 'eth_requestAccounts' })
-
-if (window.ethereum) {
-    provider = new ethers.BrowserProvider(window.ethereum);
-    console.log(provider);
-    signer = provider.getSigner();
-    console.log(signer);
-    contract = new window.ethers.Contract(contractAddress, contractABI, signer);
-    console.log(contract);
-}
+var signer;
+var provider;
+const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const tokenAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const abi = ["function storeUrl(string memory url) public", "function reward(string memory url, uint amount) public payable", "function withdraw() public"]; 
+const tokenAbi = ["function approve(address spender, uint256 value) public  returns (bool)"]
+var contract;
+var token;
+var url;
 
 document.getElementById('creatorBtn').addEventListener('click', function () {
     document.getElementById('creatorOptions').classList.remove('hidden');
+    document.getElementById('walletBtn').classList.add('hidden');
     document.getElementById('creatorBtn').classList.add('hidden');
     document.getElementById('readerBtn').classList.add('hidden');
 });
 
 document.getElementById('readerBtn').addEventListener('click', () => {
     document.getElementById('readerOptions').classList.remove('hidden');
+    document.getElementById('walletBtn').classList.add('hidden');
     document.getElementById('readerBtn').classList.add('hidden');
     document.getElementById('creatorBtn').classList.add('hidden');
 });
 
 document.getElementById('walletBtn').addEventListener('click', () => {
-    document.getElementById('readerBtn').classList.add('hidden');
-    document.getElementById('creatorBtn').classList.add('hidden');
-    if (window.ethereum && window.ethereum.isMetaMask) {
-        console.log("metamsk is installed");
-    }
+    console.log(window.ethereum)
     if (window.ethereum == null) {
         console.log("Please install wallet first");
-    } else {
-        provider = new ethers.BrowserProvider(window.ethereum)
+    }
+    else {
+        document.getElementById('walletBtn').classList.add('hidden');
+        console.log("Connect Success!");
+        provider = new ethers.BrowserProvider(window.ethereum);
         signer = provider.getSigner();
-        console.log(provider);
         console.log(signer);
+        contract = new ethers.Contract(contractAddress, abi, signer);
+        token = new ethers.Contract(tokenAddress, tokenAbi, signer);
     }
 });
 
-async function handleConnection() {
-   
-}
-
-
 document.getElementById('storeUrlButton').addEventListener('click', async () => {
-    
+    url = window.location.href;
+    console.log(signer);
+    console.log("contract111 = ", contract);
+    await contract.storeUrl(url);
+    console.log("Store Success!");
 });
 
 document.getElementById('withdrawButton').addEventListener('click', async () => {
     await contract.withdraw();
-    // 添加提现成功的提示
+    console.log("Withdraw Success!");
 });
 
 document.getElementById('tipButton').addEventListener('click', async () => {
-    const amount = ethers.utils.parseEther(document.getElementById('tipAmount').value);
-    // 这里添加调用合约打赏的代码，你需要知道被打赏的URL或其它标识符
+    const amount = document.getElementById('tipAmount').value;
+    console.log(amount);
+    url = window.location.href;
+    await token.approve(contractAddress, amount);
+    await contract.reward(url, amount);
+    console.log("Donate Success!");
 });
 
 // Get Current Tab URL
 document.addEventListener('DOMContentLoaded', function () {
-    // url = window.location.href;
-    // console.log(url);
-    chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
-        let url = tabs[0].url;
-        console.log(url);
-        document.getElementById('urlInput').value = url;
-    });
-    // chrome.runtime.sendMessage({ message: "get_current_url" }, function (response) {
-    //     console.log(response);
-    //     console.log("Current URL is: " + response.url); // Use this URL as needed
-    //     // Optionally, auto-fill the URL input for the creator
-    //     document.getElementById('urlInput').value = response.url;
-    // });
+    url = window.location.href;
+    console.log(url);
+    document.getElementById('urlInput').value = url;
 });
